@@ -1,4 +1,5 @@
 import { Component, h, State } from '@stencil/core';
+import React from 'react';
 
 @Component({
   tag: 'user-feedback',
@@ -9,14 +10,16 @@ export class UserFeedbackForm {
   @State() feedback: {
     text: string;
     overallExperience: string;
-    recommend: string;
+    recommend: boolean;
   } = {
     text: '',
     overallExperience: '',
-    recommend: '',
+    recommend: false,
   };
+  @State() isValid = false;
+  @State() message = '';
 
-  handleInput = (event: any) => {
+  handleInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = event.target.name;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     this.feedback = {
@@ -26,8 +29,15 @@ export class UserFeedbackForm {
   };
 
   onSubmitHandler = () => {
-    if (Object.values(this.feedback).every(value => value !== '')) {
+    const isEmpty = Object.values(this.feedback).some(value => value === '');
+
+    if (!isEmpty) {
       console.log(JSON.stringify(this.feedback, null, 2));
+      this.isValid = false;
+      this.message = 'Submitted!';
+    } else {
+      this.isValid = true;
+      this.message = 'Please fill in all fields';
     }
   };
 
@@ -51,12 +61,13 @@ export class UserFeedbackForm {
             </div>
             <div>
               <p>Would you recommend us?</p>
-              <input type="checkbox" name="recommend" id="yes" onInput={this.handleInput} checked={this.feedback.recommend === 'yes'} />
+              <input type="checkbox" name="recommend" id="yes" onInput={this.handleInput} checked={this.feedback.recommend === true} />
               <label>Yes 😊</label>
             </div>
             <div>
               <button onClick={this.onSubmitHandler}>Submit</button>
             </div>
+            {this.isValid ? <p>{this.message}</p> : <p>{this.message}</p>}
           </div>
         </div>
       </slot>
