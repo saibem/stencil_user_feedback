@@ -23,7 +23,6 @@ export class UserFeedbackForm {
       ...this.feedback,
       [name]: value,
     };
-    console.log(this.feedback);
   };
 
   onSubmitHandler = () => {
