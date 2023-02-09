@@ -16,28 +16,51 @@ export class UserFeedbackForm {
     overallExperience: '',
     recommend: false,
   };
-  @State() isValid = false;
   @State() message = '';
+
+  @State() validation: {
+    text: boolean;
+    overallExperience: boolean;
+  } = {
+    text: false,
+    overallExperience: false,
+  };
 
   handleInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = event.target.name;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    if (event.target.type === 'checkbox' && event.target.checked === true) {
+      this.message = '';
+    }
     this.feedback = {
       ...this.feedback,
       [name]: value,
     };
+    this.validation = {
+      ...this.validation,
+      [name]: false,
+    };
   };
 
   onSubmitHandler = () => {
-    const isEmpty = Object.values(this.feedback).some(value => value === '');
+    if (this.feedback.text === '') {
+      this.validation = {
+        ...this.validation,
+        text: true,
+      };
+    }
+    if (this.feedback.overallExperience === '') {
+      this.validation = {
+        ...this.validation,
+        overallExperience: true,
+      };
+    }
+    if (!this.feedback.recommend) {
+      this.message = 'Please check this field';
+    }
 
-    if (!isEmpty) {
+    if (Object.values(this.feedback).every(value => value !== '')) {
       console.log(JSON.stringify(this.feedback, null, 2));
-      this.isValid = false;
-      this.message = 'Submitted!';
-    } else {
-      this.isValid = true;
-      this.message = 'Please fill in all fields';
     }
   };
 
@@ -48,26 +71,27 @@ export class UserFeedbackForm {
           <div class="wrapper">
             <p> What do you like about our website?</p>
             <textarea name="text" value={this.feedback.text} onInput={this.handleInput} />
+            {this.validation.text ? <p class="errorMessage"> Please fill in the text area</p> : null}
             <div>
               <p>Overall experience</p>
-              <input type="radio" value="excellent" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'excellent'} />{' '}
+              <input type="radio" value="excellent" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'excellent'} />
               <label htmlFor="excellent">excellent</label>
-              <input type="radio" value="good" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'good'} />{' '}
+              <input type="radio" value="good" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'good'} />
               <label htmlFor="good">good</label>
-              <input type="radio" value="ok" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'ok'} />{' '}
+              <input type="radio" value="ok" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'ok'} />
               <label htmlFor="ok">ok</label>
-              <input type="radio" value="bad" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'bad'} />{' '}
+              <input type="radio" value="bad" name="overallExperience" onInput={this.handleInput} checked={this.feedback.overallExperience === 'bad'} />
               <label htmlFor="bad">bad</label>
+              {this.validation.overallExperience ? <p class="errorMessage">Please choose any option</p> : null}
             </div>
             <div>
               <p>Would you recommend us?</p>
               <input type="checkbox" name="recommend" id="yes" onInput={this.handleInput} checked={this.feedback.recommend === true} />
-              <label>Yes 😊</label>
+              <label>Yes 😊</label> <p class="errorMessage"> {this.message.length > 1 ? <p>{this.message}</p> : null}</p>
             </div>
             <div>
               <button onClick={this.onSubmitHandler}>Submit</button>
             </div>
-            {this.isValid ? <p>{this.message}</p> : <p>{this.message}</p>}
           </div>
         </div>
       </slot>
