@@ -6,69 +6,32 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
-    }
-    interface UserFeedback {
+    interface DynamicComponent {
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLDynamicComponentElement extends Components.DynamicComponent, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
-    };
-    interface HTMLUserFeedbackElement extends Components.UserFeedback, HTMLStencilElement {
-    }
-    var HTMLUserFeedbackElement: {
-        prototype: HTMLUserFeedbackElement;
-        new (): HTMLUserFeedbackElement;
+    var HTMLDynamicComponentElement: {
+        prototype: HTMLDynamicComponentElement;
+        new (): HTMLDynamicComponentElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
-        "user-feedback": HTMLUserFeedbackElement;
+        "dynamic-component": HTMLDynamicComponentElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
-    }
-    interface UserFeedback {
+    interface DynamicComponent {
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
-        "user-feedback": UserFeedback;
+        "dynamic-component": DynamicComponent;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
-            "user-feedback": LocalJSX.UserFeedback & JSXBase.HTMLAttributes<HTMLUserFeedbackElement>;
+            "dynamic-component": LocalJSX.DynamicComponent & JSXBase.HTMLAttributes<HTMLDynamicComponentElement>;
         }
     }
 }

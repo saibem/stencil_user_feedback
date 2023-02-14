@@ -1,18 +1,18 @@
 import { newSpecPage } from '@stencil/core/testing';
-import { UserFeedback } from '../user-feedback';
+import { DynamicComponent } from '../dynamic-component';
 
-describe('user-feedback', () => {
+describe('dynamic-component', () => {
   it('renders', async () => {
     const page = await newSpecPage({
-      components: [UserFeedback],
-      html: `<user-feedback></user-feedback>`,
+      components: [DynamicComponent],
+      html: `<dynamic-component></dynamic-component>`,
     });
     expect(page.root).toEqualHtml(`
-      <user-feedback>
+      <dynamic-component>
         <mock:shadow-root>
           <slot></slot>
         </mock:shadow-root>
-      </user-feedback>
+      </dynamic-component>
     `);
   });
 });
