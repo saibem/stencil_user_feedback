@@ -1,10 +1,10 @@
 import { h } from '@stencil/core';
-import { Props } from '../data';
+import { Props } from '../dynamic-component.d';
 import { ValidationError } from './ValidationError';
 
 export const RadioInput = (props: Props) => {
   const handleChange = (label: string) => {
-    props.onChange(props.question, label);
+    props.onChange(props.question.question, label);
   };
   return (
     <div>

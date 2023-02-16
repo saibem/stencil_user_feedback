@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "question": "Jake je dnes počasí",
+      "type": "select",
+      "required": true,
+      "options": [
+        { "id": "osklivo", "label": "Ošklivo" },
+        { "id": "hezky", "label": "Hezky" }
+      ]
+    },
+    {
+      "question": "Jak se jmenuješ",
+      "required": true,
+      "type": "input"
+    },
+    {
+      "question": "Vyber si pohlaví",
+      "type": "radio",
+      "required": true,
+      "options": [
+        { "id": "muz", "label": "Muž" },
+        { "id": "zena", "label": "Žena" }
+      ]
+    },
+    {
+      "question": "Souhlasím s podmínkami",
+      "type": "checkbox",
+      "required": true
+    }
+  ]
+}

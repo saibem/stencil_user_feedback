@@ -1,11 +1,11 @@
 import { h } from '@stencil/core';
-import { Props } from '../data';
+import { Props } from '../dynamic-component.d';
 import { InputHTMLAttributes } from 'react';
 import { ValidationError } from './ValidationError';
 
 export const CheckboxInput = (props: Props) => {
   const handleChange = (event: InputHTMLAttributes<HTMLInputElement>) => {
-    props.onChange(props.question, event);
+    props.onChange(props.question.question, event);
   };
 
   return (

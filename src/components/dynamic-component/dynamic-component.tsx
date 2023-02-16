@@ -1,5 +1,10 @@
 import { Component, h, Host, State } from '@stencil/core';
-import { components, Questions, questions } from './data';
+import { Questions } from './dynamic-component.d';
+import { SelectInput } from './components/SelectInput';
+import { TextInput } from './components/TextInput';
+import { CheckboxInput } from './components/CheckboxInput';
+import { RadioInput } from './components/RadioInput';
+import { ComponentTypes } from './dynamic-component.d';
 
 @Component({
   tag: 'dynamic-component',
@@ -9,43 +14,52 @@ import { components, Questions, questions } from './data';
 export class DynamicComponent {
   @State() collectedData = {};
   @State() validationError = [];
+  @State() fetchedQuestions: Questions[];
 
-  handleChange = (question, event) => {
+  components: ComponentTypes = {
+    select: SelectInput,
+    input: TextInput,
+    checkbox: CheckboxInput,
+    radio: RadioInput,
+  };
+
+  async componentWillLoad() {
+    fetch('./questions.json')
+      .then(response => response.json())
+      .then(data => {
+        this.fetchedQuestions = data.questions;
+      })
+      .catch(error => console.error(error));
+  }
+  z;
+  renderQuestion(questions: Questions[]) {
+    return questions?.map(question => {
+      if (Object.keys(this.components).includes(question.type)) {
+        const Component = this.components[question.type];
+        return <Component question={question} onChange={this.handleChange} validationError={this.validationError.includes(question.question) ? 'Vplnte políčko prosím!' : ''} />;
+      }
+    });
+  }
+  validateForm = () => {
+    this.validationError = this.fetchedQuestions.filter(q => !this.collectedData.hasOwnProperty(q.question)).map(q => q.question);
+  };
+  handleChange = (question: string, event) => {
     this.collectedData =
-      typeof event === 'object' && event.target.type === 'checkbox'
-        ? { ...this.collectedData, [question.question]: event.target.checked }
-        : { ...this.collectedData, [question.question]: event };
+      typeof event === 'object' && event.target.type === 'checkbox' ? { ...this.collectedData, [question]: event.target.checked } : { ...this.collectedData, [question]: event };
 
-    const questionIndex = this.validationError.indexOf(question.question);
+    this.removeErrorValue(question);
+  };
+  removeErrorValue = (question: string) => {
+    const questionIndex = this.validationError.indexOf(question);
     if (questionIndex !== -1) {
       this.validationError.splice(questionIndex, 1);
     }
   };
-
-  renderQuestion(questions: Questions[]) {
-    let error = '';
-
-    return questions.map(question => {
-      if (Object.keys(components).includes(question.type)) {
-        if (this.validationError.includes(question.question)) {
-          error = 'Vplnte policko prosim!';
-        }
-        const Component = components[question.type];
-        return <Component question={question} onChange={this.handleChange} validationError={error} />;
-      }
-    });
-  }
-
-  handleClick = () => {
-    console.log(JSON.stringify(this.collectedData, null, 2));
-
-    questions
-      .map(question => question.question)
-      .forEach(value => {
-        if (!Object.keys(this.collectedData).includes(value)) {
-          this.validationError = [...this.validationError, value];
-        }
-      });
+  handleSubmit = () => {
+    this.validateForm();
+    if (this.validationError.length === 0) {
+      console.log(JSON.stringify(this.collectedData, null, 2));
+    }
   };
 
   render() {
@@ -53,8 +67,8 @@ export class DynamicComponent {
       <Host>
         <div class="container">
           <div class="wrapper">
-            {this.renderQuestion(questions)}
-            <button onClick={this.handleClick}>Submit</button>
+            {this.renderQuestion(this.fetchedQuestions)}
+            <button onClick={this.handleSubmit}>Submit</button>
           </div>
         </div>
       </Host>

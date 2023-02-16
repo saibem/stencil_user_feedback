@@ -1,18 +1,12 @@
 import { h } from '@stencil/core';
-import { Props } from '../data';
+import { Props } from '../dynamic-component.d';
 import { ChangeEvent } from 'react';
 import { ValidationError } from './ValidationError';
 
 export const SelectInput = (props: Props) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    props.onChange(props.question, e.target.value);
+    props.onChange(props.question.question, e.target.value);
   };
-
-  // const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-  //   console.log(event.target.value);
-  //   props.onChange(props.question, event.target.value);
-  // };
 
   return (
     <div>
